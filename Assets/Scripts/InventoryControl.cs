@@ -21,12 +21,13 @@ public class InventoryControl : MonoBehaviour {
 	void Start () {
 
 		//initialization slots
-		slots = new Slot[slotsX, slotsY];
-		for (int tmpX = 0; tmpX < slotsX; tmpX++) {
-			for (int tmpY = 0; tmpY < slotsY; tmpY++) {
-				slots[tmpX, tmpY] = new Slot();
+		slots = new Slot[slotsY, slotsX];
+		for (int tmpY = 0; tmpY < slotsY; tmpY++) {
+			for (int tmpX = 0; tmpX < slotsX; tmpX++) {
+				slots[tmpY, tmpX] = new Slot();
 			}
 		}
+
 	}
 	
 	// Update is called once per frame
@@ -75,11 +76,11 @@ public class InventoryControl : MonoBehaviour {
 	//Add item to first not occupieted slot main inventory  
 	void addItemToSlots(GameObject item)
 	{
-		for (int tmpX = 1; tmpX < slotsX; tmpX++) {
-			for (int tmpY = 0; tmpY < slotsY; tmpY++) {
-				if (slots[tmpX, tmpY].occupied == false){
-					slots [tmpX, tmpY].item = item;
-					slots [tmpX, tmpY].occupied = true;
+		for (int tmpY = 1; tmpY < slotsY; tmpY++) {
+			for (int tmpX = 0; tmpX < slotsX; tmpX++) {
+				if (slots[tmpY, tmpX].occupied == false){
+					slots [tmpY, tmpX].item = item;
+					slots [tmpY, tmpX].occupied = true;
 					return;
 				}
 			}
