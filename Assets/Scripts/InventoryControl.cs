@@ -40,13 +40,9 @@ public class InventoryControl : MonoBehaviour {
 			//get item to slots
 			if (Input.GetKeyDown (KeyCode.E)) {
 				addItemToSlots(hit.transform.gameObject);
-				Destroy (hit.transform.gameObject);
-				if (slots[1,0].item != null)	
-					Debug.Log("0 " + slots[1,0].item.name);
-				if (slots[1,1].item != null)
-					Debug.Log("1 " + slots[1,1].item.name);
-				if (slots[1,2].item != null)
-					Debug.Log("2 " + slots[1,2].item.name);
+				//pomyśleć jak zrobić kopie obiektu a nie dezaktywować obiekt
+				//Destroy (hit.transform.gameObject);
+				hit.transform.gameObject.SetActive(false);
 			}
 		} else {
 			showLabelGetItem = false;
@@ -67,13 +63,22 @@ public class InventoryControl : MonoBehaviour {
 	void OnGUI() {
 
 		if (showLabelGetItem == true)
-			GUI.Label (new Rect (Screen.width / 2-100, Screen.height*0.8f, 200, 50), "Press E to get item");
+			GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height * 0.8f, 200, 50), "Press E to get item");
 
-		if (showInventory == true)
-			GUI.DrawTexture(new Rect(Screen.width/2-inventoryWidth/2,Screen.height/2-inventoryHeight/2,inventoryWidth,inventoryHeight), inventoryBackground);	
+		if (showInventory == true) {
+			//draw inventory background
+			GUI.DrawTexture (new Rect (Screen.width / 2 - inventoryWidth / 2, Screen.height / 2 - inventoryHeight / 2, inventoryWidth, inventoryHeight), inventoryBackground);	
+			//draw occuoued slot image
+			for (int tmpY = 0; tmpY < slotsY; tmpY++) {
+				for (int tmpX = 0; tmpX < slotsX; tmpX++) {
+					if (slots[tmpY, tmpX].occupied == true){
+						GUI.DrawTexture(new Rect(Screen.width / 2 - inventoryWidth / 2 + 25 + tmpX*100, Screen.height / 2 - inventoryHeight / 2 + 25 + tmpY*100, 75, 75),slots[tmpY, tmpX].item.GetComponent<Item>().itemImage);
+					}
+				}
+			}
+		}
 	}
-
-	//Add item to first not occupieted slot main inventory  
+	//Add item to first not occupied slot main inventory  
 	void addItemToSlots(GameObject item)
 	{
 		for (int tmpY = 1; tmpY < slotsY; tmpY++) {
