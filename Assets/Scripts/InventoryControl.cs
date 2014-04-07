@@ -17,6 +17,10 @@ public class InventoryControl : MonoBehaviour {
 	private int slotsX = 5;
 	private int slotsY = 3;
 
+	private int originalSlotX;
+	private int originalSlotY;
+	private bool take;
+	
 	// Use this for initialization
 	void Start () {
 
@@ -52,6 +56,7 @@ public class InventoryControl : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.I)) {
 			if (showInventory == false) {
 				showInventory = true;
+				take = false;
 			} else {
 				showInventory = false;
 			}
@@ -76,8 +81,38 @@ public class InventoryControl : MonoBehaviour {
 					}
 				}
 			}
+			//Drag and drop item
+			if (Event.current.type == EventType.mouseDown){
+				Vector2 mouse = Event.current.mousePosition;
+				for (int tmpY = 0; tmpY < slotsY; tmpY++) {
+					for (int tmpX = 0; tmpX < slotsX; tmpX++) {
+						if (mouse.x > Screen.width / 2 - inventoryWidth / 2 + 25 + tmpX*100 && 
+						    mouse.x < Screen.width / 2 - inventoryWidth / 2 + 100 + tmpX*100 &&
+						    mouse.y > Screen.height / 2 - inventoryHeight / 2 + 25 + tmpY*100 &&
+						    mouse.y < Screen.height / 2 - inventoryHeight / 2 + 100 + tmpY*100){
+							if (take == false && slots [tmpY, tmpX].occupied == true){
+								Debug.Log ("copy");
+								originalSlotX = tmpX;
+								originalSlotY = tmpY;
+								take = true;
+							} 
+							if (take == true && slots [tmpY, tmpX].occupied == false){
+								Debug.Log ("paste");
+								slots [tmpY, tmpX].item = slots [originalSlotY, originalSlotX].item;
+								slots [tmpY, tmpX].occupied = true;
+								slots [originalSlotY, originalSlotX].item = null;
+								slots [originalSlotY, originalSlotX].occupied = false;
+								take = false;
+							}
+						}
+					}
+				}
+				Debug.Log("[" + originalSlotY + "," + originalSlotX + "]");
+			}
 		}
 	}
+
+
 	//Add item to first not occupied slot main inventory  
 	void addItemToSlots(GameObject item)
 	{
