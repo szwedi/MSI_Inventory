@@ -141,6 +141,7 @@ public class InventoryControl : MonoBehaviour {
 					item.SetActive(false);
 					item.GetComponent<Item>().taked = true;
 					item.transform.parent = itemHandler;
+					item.rigidbody.isKinematic = true;
 					slots [tmpY, tmpX].item = item;
 					slots [tmpY, tmpX].occupied = true;
 					return;
@@ -160,8 +161,9 @@ public class InventoryControl : MonoBehaviour {
 
 	void dropItem(int dropItem){
 		if (activedItem != 0) {
-			slots [0, dropItem - 1].item.transform.parent = null;
 			slots [0, dropItem - 1].item.GetComponent<Item> ().taked = false;
+			slots [0, dropItem - 1].item.rigidbody.isKinematic = false;
+			slots [0, dropItem - 1].item.transform.parent = null;
 			slots [0, dropItem - 1].item = null;
 			slots [0, dropItem - 1].occupied = false;
 			activedItem = 0;
