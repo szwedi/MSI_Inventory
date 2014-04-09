@@ -159,11 +159,12 @@ public class InventoryControl : MonoBehaviour {
 	}
 
 	void dropItem(int dropItem){
-		slots [0, dropItem - 1].item.GetComponent<Item> ().taked = false;
-		Instantiate (slots [0, dropItem - 1].item);
-		Destroy (slots [0, dropItem - 1].item);
-		slots [0, dropItem - 1].item = null;
-		slots [0, dropItem - 1].occupied = false;
-		activedItem = 0;
+		if (activedItem != 0) {
+			slots [0, dropItem - 1].item.transform.parent = null;
+			slots [0, dropItem - 1].item.GetComponent<Item> ().taked = false;
+			slots [0, dropItem - 1].item = null;
+			slots [0, dropItem - 1].occupied = false;
+			activedItem = 0;
+		}
 	}
 }
