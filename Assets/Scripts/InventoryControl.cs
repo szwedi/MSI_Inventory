@@ -9,6 +9,8 @@ public class InventoryControl : MonoBehaviour {
 
 	private bool showInventory = false;
 	private bool showLabelGetItem = false;
+	
+	private int activedItem = 0;
 
 	public RaycastHit hit;
 	private Ray ray;
@@ -17,13 +19,14 @@ public class InventoryControl : MonoBehaviour {
 	private int slotsX = 5;
 	private int slotsY = 3;
 
+	public Transform itemHandler;
+
 	private int originalSlotX;
 	private int originalSlotY;
 	private bool take;
 	
 	// Use this for initialization
 	void Start () {
-
 		//initialization slots
 		slots = new Slot[slotsY, slotsX];
 		for (int tmpY = 0; tmpY < slotsY; tmpY++) {
@@ -31,7 +34,6 @@ public class InventoryControl : MonoBehaviour {
 				slots[tmpY, tmpX] = new Slot();
 			}
 		}
-
 	}
 	
 	// Update is called once per frame
@@ -39,14 +41,11 @@ public class InventoryControl : MonoBehaviour {
 
 		//display label to get item
 		ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		if (Physics.Raycast (ray, out hit, 2) && hit.transform.tag == "item") {
+		if (Physics.Raycast (ray, out hit, 2) && hit.transform.tag == "item" && hit.transform.gameObject.GetComponent<Item>().taked == false) {
 			showLabelGetItem = true;
 			//get item to slots
 			if (Input.GetKeyDown (KeyCode.E)) {
 				addItemToSlots(hit.transform.gameObject);
-				//pomyśleć jak zrobić kopie obiektu a nie dezaktywować obiekt
-				//Destroy (hit.transform.gameObject);
-				hit.transform.gameObject.SetActive(false);
 			}
 		} else {
 			showLabelGetItem = false;
@@ -62,6 +61,27 @@ public class InventoryControl : MonoBehaviour {
 			}
 		}
 
+		//active item by shortcut
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			activeItem (1);	
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			activeItem (2);	
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha3)) {
+			activeItem (3);	
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			activeItem (4);	
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			activeItem (5);	
+		}
+
+		//drop item
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			dropItem(activedItem);		
+		}
 	}
 	
 	//Display GUI
@@ -81,7 +101,7 @@ public class InventoryControl : MonoBehaviour {
 					}
 				}
 			}
-			//Drag and drop item
+			//drag and drop item
 			if (Event.current.type == EventType.mouseDown){
 				Vector2 mouse = Event.current.mousePosition;
 				for (int tmpY = 0; tmpY < slotsY; tmpY++) {
@@ -111,19 +131,39 @@ public class InventoryControl : MonoBehaviour {
 			}
 		}
 	}
-
-
+	
 	//Add item to first not occupied slot main inventory  
 	void addItemToSlots(GameObject item)
 	{
 		for (int tmpY = 1; tmpY < slotsY; tmpY++) {
 			for (int tmpX = 0; tmpX < slotsX; tmpX++) {
 				if (slots[tmpY, tmpX].occupied == false){
+					item.SetActive(false);
+					item.GetComponent<Item>().taked = true;
+					item.transform.parent = itemHandler;
 					slots [tmpY, tmpX].item = item;
 					slots [tmpY, tmpX].occupied = true;
 					return;
 				}
 			}
 		}
+	}
+
+	void activeItem(int activeItem){
+		if (slots [0, activeItem-1].occupied == true){
+			if (activedItem != 0)
+				slots [0, activedItem-1].item.gameObject.SetActive(false);
+			slots [0,activeItem-1].item.gameObject.SetActive(true);
+			activedItem = activeItem;
+		}
+	}
+
+	void dropItem(int dropItem){
+		slots [0, dropItem - 1].item.GetComponent<Item> ().taked = false;
+		Instantiate (slots [0, dropItem - 1].item);
+		Destroy (slots [0, dropItem - 1].item);
+		slots [0, dropItem - 1].item = null;
+		slots [0, dropItem - 1].occupied = false;
+		activedItem = 0;
 	}
 }
