@@ -141,6 +141,8 @@ public class InventoryControl : MonoBehaviour {
 					item.SetActive(false);
 					item.GetComponent<Item>().taked = true;
 					item.transform.parent = itemHandler;
+					item.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
+					item.transform.localPosition = new Vector3(0,-1,2);
 					item.rigidbody.isKinematic = true;
 					slots [tmpY, tmpX].item = item;
 					slots [tmpY, tmpX].occupied = true;
