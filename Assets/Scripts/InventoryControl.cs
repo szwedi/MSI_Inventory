@@ -24,6 +24,9 @@ public class InventoryControl : MonoBehaviour {
 	private int originalSlotX;
 	private int originalSlotY;
 	private bool take;
+
+	public Texture2D descriptionImage;
+	public GUIStyle labelStyle;
 	
 	// Use this for initialization
 	void Start () {
@@ -102,7 +105,7 @@ public class InventoryControl : MonoBehaviour {
 				}
 			}
 			//drag and drop item
-			if (Event.current.type == EventType.mouseDown){
+			if (Input.GetMouseButtonDown(0)){
 				Vector2 mouse = Event.current.mousePosition;
 				for (int tmpY = 0; tmpY < slotsY; tmpY++) {
 					for (int tmpX = 0; tmpX < slotsX; tmpX++) {
@@ -128,6 +131,23 @@ public class InventoryControl : MonoBehaviour {
 					}
 				}
 				Debug.Log("[" + originalSlotY + "," + originalSlotX + "]");
+			}
+			// show description
+			if (Input.GetMouseButton(1)){
+				Vector2 mouse = Event.current.mousePosition;
+				for (int tmpY = 0; tmpY < slotsY; tmpY++) {
+					for (int tmpX = 0; tmpX < slotsX; tmpX++) {
+						if (mouse.x > Screen.width / 2 - inventoryWidth / 2 + 25 + tmpX*100 && 
+						    mouse.x < Screen.width / 2 - inventoryWidth / 2 + 100 + tmpX*100 &&
+						    mouse.y > Screen.height / 2 - inventoryHeight / 2 + 25 + tmpY*100 &&
+						    mouse.y < Screen.height / 2 - inventoryHeight / 2 + 100 + tmpY*100){
+							if (slots [tmpY, tmpX].occupied == true){
+								GUI.DrawTexture(new Rect(mouse.x, mouse.y - 200, 200, 200),descriptionImage);
+								GUI.Label(new Rect(mouse.x, mouse.y - 200, 200, 200),slots[tmpY, tmpX].item.GetComponent<Item>().description, labelStyle);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
