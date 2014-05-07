@@ -105,7 +105,7 @@ public class InventoryControl : MonoBehaviour {
 				}
 			}
 			//drag and drop item
-			if (Input.GetMouseButtonDown(0)){
+			if (Event.current.type == EventType.MouseDown && Event.current.button == 0){
 				Vector2 mouse = Event.current.mousePosition;
 				for (int tmpY = 0; tmpY < slotsY; tmpY++) {
 					for (int tmpX = 0; tmpX < slotsX; tmpX++) {
@@ -127,6 +127,7 @@ public class InventoryControl : MonoBehaviour {
 								slots [originalSlotY, originalSlotX].occupied = false;
 								take = false;
 							}
+							Debug.Log("occ = " + slots[tmpY,tmpX].occupied + " , take = " + take);
 						}
 					}
 				}
