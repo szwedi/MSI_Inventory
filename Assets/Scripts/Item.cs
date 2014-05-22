@@ -5,7 +5,7 @@ public class Item : MonoBehaviour {
 
 	public Texture2D itemImage;
 	public string description;
-	public bool taked = false;
+	public bool taken = false;
 
 	// Use this for initialization
 	void Start () {

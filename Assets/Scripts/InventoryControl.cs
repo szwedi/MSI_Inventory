@@ -6,7 +6,6 @@ public class InventoryControl : MonoBehaviour {
 	public Texture2D inventoryBackground;
 	public float inventoryWidth = 525;
 	public float inventoryHeight = 325;
-
 	private bool showInventory = false;
 	private bool showLabelGetItem = false;
 	
@@ -44,7 +43,7 @@ public class InventoryControl : MonoBehaviour {
 
 		//display label to get item
 		ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		if (Physics.Raycast (ray, out hit, 2) && hit.transform.tag == "item" && hit.transform.gameObject.GetComponent<Item>().taked == false) {
+		if (Physics.Raycast (ray, out hit, 2) && hit.transform.tag == "item" && hit.transform.gameObject.GetComponent<Item>().taken == false) {
 			showLabelGetItem = true;
 			//get item to slots
 			if (Input.GetKeyDown (KeyCode.E)) {
@@ -59,8 +58,12 @@ public class InventoryControl : MonoBehaviour {
 			if (showInventory == false) {
 				showInventory = true;
 				take = false;
+				foreach(var mouseLook in GetComponentsInChildren<MouseLook>())
+					mouseLook.enabled = false;
 			} else {
 				showInventory = false;
+				foreach(var mouseLook in GetComponentsInChildren<MouseLook>())
+					mouseLook.enabled = true;
 			}
 		}
 
@@ -160,7 +163,7 @@ public class InventoryControl : MonoBehaviour {
 			for (int tmpX = 0; tmpX < slotsX; tmpX++) {
 				if (slots[tmpY, tmpX].occupied == false){
 					item.SetActive(false);
-					item.GetComponent<Item>().taked = true;
+					item.GetComponent<Item>().taken = true;
 					item.transform.parent = itemHandler;
 					item.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
 					item.transform.localPosition = new Vector3(0,-1,2);
@@ -184,7 +187,7 @@ public class InventoryControl : MonoBehaviour {
 
 	void dropItem(int dropItem){
 		if (activedItem != 0) {
-			slots [0, dropItem - 1].item.GetComponent<Item> ().taked = false;
+			slots [0, dropItem - 1].item.GetComponent<Item> ().taken = false;
 			slots [0, dropItem - 1].item.rigidbody.isKinematic = false;
 			slots [0, dropItem - 1].item.transform.parent = null;
 			slots [0, dropItem - 1].item = null;
