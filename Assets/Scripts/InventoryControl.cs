@@ -8,6 +8,7 @@ public class InventoryControl : MonoBehaviour {
 	public float inventoryHeight = 325;
 	private bool showInventory = false;
 	private bool showLabelGetItem = false;
+	private int inventorySlot = 10;
 	
 	private int activedItem = 0;
 
@@ -47,7 +48,12 @@ public class InventoryControl : MonoBehaviour {
 			showLabelGetItem = true;
 			//get item to slots
 			if (Input.GetKeyDown (KeyCode.E)) {
-				addItemToSlots(hit.transform.gameObject);
+				if(inventorySlot>0){
+					addItemToSlots(hit.transform.gameObject);
+					inventorySlot-=1;
+				}
+				else{
+				}
 			}
 		} else {
 			showLabelGetItem = false;
@@ -86,16 +92,20 @@ public class InventoryControl : MonoBehaviour {
 
 		//drop item
 		if (Input.GetKeyDown (KeyCode.Q)) {
-			dropItem(activedItem);		
+			dropItem(activedItem);
+			inventorySlot+=1;
 		}
 	}
 	
 	//Display GUI
 	void OnGUI() {
 
-		if (showLabelGetItem == true)
-			GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height * 0.8f, 200, 50), "Press E to get item");
+		if (showLabelGetItem == true && inventorySlot == 0) 
+			GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height * 0.8f, 200, 50), "Inventory is full");
 
+		if (showLabelGetItem == true && inventorySlot>=1)
+			GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height * 0.8f, 200, 50), "Press E to get item");
+				
 		if (showInventory == true) {
 			//draw inventory background
 			GUI.DrawTexture (new Rect (Screen.width / 2 - inventoryWidth / 2, Screen.height / 2 - inventoryHeight / 2, inventoryWidth, inventoryHeight), inventoryBackground);	
